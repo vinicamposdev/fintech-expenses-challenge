@@ -6,6 +6,7 @@ import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
 import { Categories } from '../pages/Categories';
 import { Transactions } from '../pages/Transactions';
+import { NotFound } from '../pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -38,5 +39,9 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
