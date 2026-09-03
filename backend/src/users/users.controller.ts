@@ -26,7 +26,7 @@ export class UsersController {
     // User is guaranteed to exist from JWT validation, but we still fetch the latest data
     const userProfile = await this.usersService.getUserProfile(user.id);
     // This should never be null in normal circumstances, but TypeScript requires us to handle it
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     return { data: userProfile! };
   }
 }
