@@ -1,6 +1,14 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { UsersService, UserProfile } from './users.service.js';
+import { UserProfileResponseDto } from './dtos/user-profile.dto.js';
+import { ErrorResponseDto } from '../common/dtos/error-response.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 
@@ -12,13 +20,18 @@ export class UsersController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  @ApiResponse({
-    status: 200,
-    description: 'Current user profile',
+  @ApiOperation({
+    summary: 'Profile of the token owner',
+    description:
+      'Resolves the user from the bearer token and returns the stored profile. Handy to check that a token is still valid. The password hash is never returned.',
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
+  @ApiOkResponse({
+    description: 'Current user profile.',
+    type: UserProfileResponseDto,
+  })
+  @ApiUnauthorizedResponse({
+    description: 'Missing, expired or invalid bearer token.',
+    type: ErrorResponseDto,
   })
   async getCurrentUser(
     @CurrentUser() user: { id: string; email: string },

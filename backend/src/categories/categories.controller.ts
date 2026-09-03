@@ -9,25 +9,79 @@ import {
   UseGuards,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiBody,
+  ApiParam,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiNoContentResponse,
+  ApiNotFoundResponse,
+  ApiUnauthorizedResponse,
+  ApiBadRequestResponse,
+} from '@nestjs/swagger';
 import { CategoriesService } from './categories.service.js';
 import { Category } from './entities/category.entity.js';
 import { CreateCategoryDto } from './dtos/create-category.dto.js';
 import { UpdateCategoryDto } from './dtos/update-category.dto.js';
+import {
+  CategoryResponseDto,
+  CategoryListResponseDto,
+} from './dtos/category-response.dto.js';
+import { ErrorResponseDto } from '../common/dtos/error-response.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 
+const CATEGORY_ID_PARAM = {
+  name: 'id',
+  description: 'UUID of a category owned by the authenticated user.',
+  format: 'uuid',
+  example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+} as const;
+
 @ApiTags('categories')
 @ApiBearerAuth('bearer')
+@ApiUnauthorizedResponse({
+  description: 'Missing, expired or invalid bearer token.',
+  type: ErrorResponseDto,
+})
 @UseGuards(JwtAuthGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @ApiResponse({
-    status: 201,
-    description: 'Category created',
+  @ApiOperation({
+    summary: 'Create a category',
+    description:
+      'Categories are per-user; the owner is taken from the token, never from the body. Create one before creating transactions — `POST /transactions` requires an existing `categoryId`.',
+  })
+  @ApiBody({
+    type: CreateCategoryDto,
+    examples: {
+      expense: {
+        summary: 'Expense category',
+        value: {
+          name: 'Alimentação',
+          description: 'Groceries, restaurants and coffee',
+        },
+      },
+      nameOnly: {
+        summary: 'Name only',
+        description: '`description` is optional.',
+        value: { name: 'Transporte' },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: 'Category created.',
+    type: CategoryResponseDto,
+  })
+  @ApiBadRequestResponse({
+    description: 'Payload failed validation (e.g. empty `name`).',
+    type: ErrorResponseDto,
   })
   async create(
     @CurrentUser() user: { id: string; email: string },
@@ -41,9 +95,14 @@ export class CategoriesController {
   }
 
   @Get()
-  @ApiResponse({
-    status: 200,
-    description: 'List of categories',
+  @ApiOperation({
+    summary: 'List categories',
+    description:
+      'Returns every category of the authenticated user, newest first. Not paginated.',
+  })
+  @ApiOkResponse({
+    description: 'List of categories.',
+    type: CategoryListResponseDto,
   })
   async findAll(
     @CurrentUser() user: { id: string; email: string },
@@ -53,13 +112,15 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  @ApiResponse({
-    status: 200,
-    description: 'Category details',
+  @ApiOperation({ summary: 'Get one category' })
+  @ApiParam(CATEGORY_ID_PARAM)
+  @ApiOkResponse({
+    description: 'Category details.',
+    type: CategoryResponseDto,
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Category not found',
+  @ApiNotFoundResponse({
+    description: 'No category with this id belongs to the authenticated user.',
+    type: ErrorResponseDto,
   })
   async findOne(
     @CurrentUser() user: { id: string; email: string },
@@ -70,13 +131,31 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  @ApiResponse({
-    status: 200,
-    description: 'Category updated',
+  @ApiOperation({
+    summary: 'Update a category',
+    description: 'Partial update — send only the fields you want to change.',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Category not found',
+  @ApiParam(CATEGORY_ID_PARAM)
+  @ApiBody({
+    type: UpdateCategoryDto,
+    examples: {
+      renameOnly: {
+        summary: 'Rename',
+        value: { name: 'Alimentação e Delivery' },
+      },
+      descriptionOnly: {
+        summary: 'Change the description',
+        value: { description: 'Everything food related' },
+      },
+    },
+  })
+  @ApiOkResponse({
+    description: 'Category updated.',
+    type: CategoryResponseDto,
+  })
+  @ApiNotFoundResponse({
+    description: 'No category with this id belongs to the authenticated user.',
+    type: ErrorResponseDto,
   })
   async update(
     @CurrentUser() user: { id: string; email: string },
@@ -93,13 +172,16 @@ export class CategoriesController {
 
   @Delete(':id')
   @HttpCode(204)
-  @ApiResponse({
-    status: 204,
-    description: 'Category deleted',
+  @ApiOperation({
+    summary: 'Delete a category',
+    description:
+      'Deleting a category that still has transactions is rejected by the database (`onDelete: RESTRICT`) — delete or re-categorise its transactions first.',
   })
-  @ApiResponse({
-    status: 404,
-    description: 'Category not found',
+  @ApiParam(CATEGORY_ID_PARAM)
+  @ApiNoContentResponse({ description: 'Category deleted; empty body.' })
+  @ApiNotFoundResponse({
+    description: 'No category with this id belongs to the authenticated user.',
+    type: ErrorResponseDto,
   })
   async remove(
     @CurrentUser() user: { id: string; email: string },
