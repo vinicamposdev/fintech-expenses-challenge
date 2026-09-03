@@ -21,11 +21,11 @@ export class AppController {
   @ApiOkResponse({
     schema: {
       type: 'object',
-      properties: { data: { type: 'string', example: 'Hello World!' } },
+      properties: { data: { type: 'string', example: 'Service Running.' } },
     },
   })
-  getHello(): string {
-    return this.appService.getHello();
+  check(): string {
+    return this.appService.check();
   }
 
   @Post('test-validation')
