@@ -1,20 +1,45 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
 
 export function Layout(): JSX.Element {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = (): void => {
     localStorage.removeItem('accessToken');
     navigate('/login');
   };
 
+  const isActive = (path: string): boolean => location.pathname === path;
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <nav className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex items-center">
+            <div className="flex items-center gap-8">
               <h1 className="text-2xl font-bold text-gray-900">Fintech Expenses</h1>
+              <div className="flex gap-6">
+                <Link
+                  to="/"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/')
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/categories"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/categories')
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Categories
+                </Link>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <button
