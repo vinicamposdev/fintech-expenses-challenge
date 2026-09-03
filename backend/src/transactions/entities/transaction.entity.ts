@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -8,8 +9,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity.js';
-import { Category } from '../../categories/entities/category.entity.js';
+import type { User } from '../../users/entities/user.entity.js';
+import type { Category } from '../../categories/entities/category.entity.js';
 
 export enum TransactionType {
   ENTRADA = 'ENTRADA',
@@ -48,11 +49,11 @@ export class Transaction {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.transactions, { onDelete: 'CASCADE' })
+  @ManyToOne('User', 'transactions', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Category, (category) => category.transactions, {
+  @ManyToOne('Category', 'transactions', {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'categoryId' })

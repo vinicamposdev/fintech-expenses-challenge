@@ -48,6 +48,7 @@ docker-compose up -d
 ### 4. Executar migrações
 
 ```bash
+npm run build
 npm run typeorm migration:run
 ```
 

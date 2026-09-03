@@ -20,12 +20,12 @@
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "typeorm": "typeorm -d src/database/data-source.ts",
-    "typeorm:migration:generate": "typeorm migration:generate -d src/database/data-source.ts",
-    "typeorm:migration:create": "typeorm migration:create -d src/database/data-source.ts",
-    "typeorm:migration:run": "typeorm migration:run -d src/database/data-source.ts",
-    "typeorm:migration:revert": "typeorm migration:revert -d src/database/data-source.ts",
-    "typeorm:migration:show": "typeorm migration:show -d src/database/data-source.ts",
+    "typeorm": "node --loader ts-node/esm ./node_modules/typeorm/cli.js -d src/database/typeorm.config.ts",
+    "typeorm:migration:generate": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:generate -d src/database/typeorm.config.ts",
+    "typeorm:migration:create": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:create -d src/database/typeorm.config.ts",
+    "typeorm:migration:run": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:run -d src/database/typeorm.config.ts",
+    "typeorm:migration:revert": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:revert -d src/database/typeorm.config.ts",
+    "typeorm:migration:show": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:show -d src/database/typeorm.config.ts",
     "seed": "node --loader ts-node/esm src/database/seed.ts"
   },
   "dependencies": {

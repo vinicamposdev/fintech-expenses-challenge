@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,8 +10,8 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity.js';
-import { Transaction } from '../../transactions/entities/transaction.entity.js';
+import type { User } from '../../users/entities/user.entity.js';
+import type { Transaction } from '../../transactions/entities/transaction.entity.js';
 
 @Entity('categories')
 @Index(['userId'])
@@ -33,10 +34,10 @@ export class Category {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.categories, { onDelete: 'CASCADE' })
+  @ManyToOne('User', 'categories', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  @OneToMany('Transaction', 'category')
   transactions: Transaction[];
 }

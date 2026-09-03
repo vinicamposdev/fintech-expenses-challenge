@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,8 +7,8 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Category } from '../../categories/entities/category.entity.js';
-import { Transaction } from '../../transactions/entities/transaction.entity.js';
+import type { Category } from '../../categories/entities/category.entity.js';
+import type { Transaction } from '../../transactions/entities/transaction.entity.js';
 
 @Entity('users')
 export class User {
@@ -29,9 +30,9 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => Category, (category) => category.user)
+  @OneToMany('Category', 'user')
   categories: Category[];
 
-  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  @OneToMany('Transaction', 'user')
   transactions: Transaction[];
 }
