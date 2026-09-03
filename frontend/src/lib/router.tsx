@@ -1,24 +1,32 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from '../components/Layout';
+import { ProtectedRoute } from '../components/ProtectedRoute';
 import { Home } from '../pages/Home';
+import { Login } from '../pages/Login';
+import { Register } from '../pages/Register';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-    ],
-  },
-  {
     path: '/login',
-    element: <div className="min-h-screen flex items-center justify-center">Login Page (Coming Soon)</div>,
+    element: <Login />,
   },
   {
     path: '/register',
-    element: <div className="min-h-screen flex items-center justify-center">Register Page (Coming Soon)</div>,
+    element: <Register />,
+  },
+  {
+    path: '/',
+    element: <ProtectedRoute />,
+    children: [
+      {
+        element: <Layout />,
+        children: [
+          {
+            index: true,
+            element: <Home />,
+          },
+        ],
+      },
+    ],
   },
 ]);
