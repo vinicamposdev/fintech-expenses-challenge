@@ -1,0 +1,9 @@
+# Keep the `railway up` upload small — Railway installs and builds from source.
+node_modules
+dist
+coverage
+test
+*.tsbuildinfo
+.env
+.env.*
+!.env.example

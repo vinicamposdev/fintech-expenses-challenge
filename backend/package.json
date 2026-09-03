@@ -26,7 +26,11 @@
     "typeorm:migration:run": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:run -d src/database/typeorm.config.ts",
     "typeorm:migration:revert": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:revert -d src/database/typeorm.config.ts",
     "typeorm:migration:show": "node --loader ts-node/esm ./node_modules/typeorm/cli.js migration:show -d src/database/typeorm.config.ts",
+    "migration:run:prod": "node ./node_modules/typeorm/cli.js migration:run -d dist/database/data-source.js",
     "seed": "node --loader ts-node/esm src/database/seed.ts"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
