@@ -1,8 +1,19 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import Link from '@mui/material/Link';
+import Stack from '@mui/material/Stack';
+import CircularProgress from '@mui/material/CircularProgress';
+import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useAuth } from '../context/AuthContext';
 
 const loginSchema = z.object({
@@ -40,74 +51,77 @@ export function Login(): JSX.Element {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Sign in</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Demo: demo@example.com / password123
-          </p>
-        </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          {apiError && (
-            <div className="rounded-md bg-red-50 p-4">
-              <div className="text-sm text-red-800">{apiError}</div>
-            </div>
-          )}
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register('email')}
-              className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-              }`}
-              placeholder="Email"
-            />
-            {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
-          </div>
-
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              {...register('password')}
-              className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-              }`}
-              placeholder="Password"
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        bgcolor: 'background.default',
+        px: 2,
+        py: 6,
+      }}
+    >
+      <Box sx={{ width: '100%', maxWidth: 400 }}>
+        <Box sx={{ textAlign: 'center', mb: 3 }}>
+          <Avatar
+            variant="rounded"
+            sx={{ bgcolor: 'primary.main', color: 'primary.contrastText', mx: 'auto', mb: 2 }}
           >
-            {isLoading ? 'Signing in...' : 'Sign in'}
-          </button>
+            <WalletIcon fontSize="small" />
+          </Avatar>
+          <Typography variant="h5" fontWeight={700}>
+            Sign in to your account
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            Demo: demo@example.com / password123
+          </Typography>
+        </Box>
 
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
-                Sign up
-              </Link>
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Paper sx={{ p: 4 }}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2.5}>
+              {apiError && <Alert severity="error">{apiError}</Alert>}
+
+              <TextField
+                label="Email address"
+                type="email"
+                fullWidth
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+
+              <TextField
+                label="Password"
+                type="password"
+                fullWidth
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                size="large"
+                disabled={isLoading}
+                startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : undefined}
+              >
+                {isLoading ? 'Signing in...' : 'Sign in'}
+              </Button>
+
+              <Typography variant="body2" color="text.secondary" textAlign="center">
+                Don't have an account?{' '}
+                <Link component={RouterLink} to="/register" fontWeight={600}>
+                  Sign up
+                </Link>
+              </Typography>
+            </Stack>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
   );
 }

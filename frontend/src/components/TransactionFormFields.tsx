@@ -1,4 +1,7 @@
 import type { FieldErrors, UseFormRegister } from 'react-hook-form';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
 import type { Category } from '../types';
 
 interface TransactionFormData {
@@ -21,105 +24,79 @@ export function TransactionFormFields({
   categories,
 }: TransactionFormFieldsProps): JSX.Element {
   return (
-    <>
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
-        <input
-          id="description"
-          type="text"
-          {...register('description')}
+    <Grid container spacing={2}>
+      <Grid size={12}>
+        <TextField
+          label="Description"
+          fullWidth
           placeholder="e.g., Grocery shopping"
-          className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-            errors.description
-              ? 'border-red-300 focus:ring-red-500'
-              : 'border-gray-300 focus:ring-blue-500'
-          }`}
+          slotProps={{ inputLabel: { shrink: true } }}
+          {...register('description')}
+          error={!!errors.description}
+          helperText={errors.description?.message}
         />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
-        )}
-      </div>
+      </Grid>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
-            Amount
-          </label>
-          <input
-            id="amount"
-            type="number"
-            step="0.01"
-            {...register('amount', { valueAsNumber: true })}
-            placeholder="0.00"
-            className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              errors.amount ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
-          {errors.amount && <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>}
-        </div>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <TextField
+          label="Amount"
+          type="number"
+          fullWidth
+          inputProps={{ step: '0.01' }}
+          placeholder="0.00"
+          slotProps={{ inputLabel: { shrink: true } }}
+          {...register('amount', { valueAsNumber: true })}
+          error={!!errors.amount}
+          helperText={errors.amount?.message}
+        />
+      </Grid>
 
-        <div>
-          <label htmlFor="type" className="block text-sm font-medium text-gray-700">
-            Type
-          </label>
-          <select
-            id="type"
-            {...register('type')}
-            className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              errors.type ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          >
-            <option value="">Select type</option>
-            <option value="ENTRADA">Income</option>
-            <option value="SAIDA">Expense</option>
-          </select>
-          {errors.type && <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>}
-        </div>
-      </div>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <TextField
+          select
+          label="Type"
+          fullWidth
+          defaultValue=""
+          {...register('type')}
+          error={!!errors.type}
+          helperText={errors.type?.message}
+        >
+          <MenuItem value="">Select type</MenuItem>
+          <MenuItem value="ENTRADA">Income</MenuItem>
+          <MenuItem value="SAIDA">Expense</MenuItem>
+        </TextField>
+      </Grid>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
-            Category
-          </label>
-          <select
-            id="categoryId"
-            {...register('categoryId')}
-            className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              errors.categoryId
-                ? 'border-red-300 focus:ring-red-500'
-                : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          >
-            <option value="">Select category</option>
-            {categories.map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
-          </select>
-          {errors.categoryId && (
-            <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
-          )}
-        </div>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <TextField
+          select
+          label="Category"
+          fullWidth
+          defaultValue=""
+          {...register('categoryId')}
+          error={!!errors.categoryId}
+          helperText={errors.categoryId?.message}
+        >
+          <MenuItem value="">Select category</MenuItem>
+          {categories.map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
 
-        <div>
-          <label htmlFor="date" className="block text-sm font-medium text-gray-700">
-            Date
-          </label>
-          <input
-            id="date"
-            type="date"
-            {...register('date')}
-            className={`mt-1 block w-full rounded-md border px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              errors.date ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-blue-500'
-            }`}
-          />
-          {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>}
-        </div>
-      </div>
-    </>
+      <Grid size={{ xs: 12, sm: 6 }}>
+        <TextField
+          label="Date"
+          type="date"
+          fullWidth
+          {...register('date')}
+          error={!!errors.date}
+          helperText={errors.date?.message}
+          slotProps={{ inputLabel: { shrink: true } }}
+        />
+      </Grid>
+    </Grid>
   );
 }

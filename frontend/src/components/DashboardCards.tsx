@@ -1,3 +1,12 @@
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import WalletIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import type { DashboardSummary } from '../types';
 
 interface DashboardCardsProps {
@@ -21,28 +30,66 @@ export function DashboardCards({ data, dateRange }: DashboardCardsProps): JSX.El
       ? `${dateRange.startDate || 'Start'} to ${dateRange.endDate || 'Today'}`
       : 'All Time';
 
+  const cards = [
+    {
+      label: 'Current Balance',
+      value: data.balance,
+      caption: 'All Time',
+      icon: WalletIcon,
+      color: 'primary.dark' as const,
+      bg: 'primary.light' as const,
+      valueColor: 'text.primary',
+    },
+    {
+      label: 'Total Income',
+      value: data.totalEntrada,
+      caption: dateRangeText,
+      icon: TrendingUpIcon,
+      color: 'success.main' as const,
+      bg: 'success.light' as const,
+      valueColor: 'success.main',
+    },
+    {
+      label: 'Total Expenses',
+      value: data.totalSaida,
+      caption: dateRangeText,
+      icon: TrendingDownIcon,
+      color: 'error.main' as const,
+      bg: 'error.light' as const,
+      valueColor: 'error.main',
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {/* Balance Card */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-200 p-6">
-        <h3 className="text-sm font-medium text-blue-600 mb-2">Current Balance</h3>
-        <p className="text-3xl font-bold text-blue-900">{formatCurrency(data.balance)}</p>
-        <p className="text-xs text-blue-600 mt-2">All Time</p>
-      </div>
-
-      {/* Income Card */}
-      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200 p-6">
-        <h3 className="text-sm font-medium text-green-600 mb-2">Total Income</h3>
-        <p className="text-3xl font-bold text-green-900">{formatCurrency(data.totalEntrada)}</p>
-        <p className="text-xs text-green-600 mt-2">{dateRangeText}</p>
-      </div>
-
-      {/* Expense Card */}
-      <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-lg border border-red-200 p-6">
-        <h3 className="text-sm font-medium text-red-600 mb-2">Total Expenses</h3>
-        <p className="text-3xl font-bold text-red-900">{formatCurrency(data.totalSaida)}</p>
-        <p className="text-xs text-red-600 mt-2">{dateRangeText}</p>
-      </div>
-    </div>
+    <Grid container spacing={2} sx={{ mb: 3 }}>
+      {cards.map((card) => {
+        const Icon = card.icon;
+        return (
+          <Grid key={card.label} size={{ xs: 12, md: 4 }}>
+            <Card>
+              <CardContent>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.5 }}>
+                  <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                    {card.label}
+                  </Typography>
+                  <Avatar
+                    variant="rounded"
+                    sx={{ width: 36, height: 36, bgcolor: card.bg, color: card.color }}
+                  >
+                    <Icon fontSize="small" />
+                  </Avatar>
+                </Box>
+                <Typography variant="h5" fontWeight={700} color={card.valueColor}>
+                  {formatCurrency(card.value)}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {card.caption}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        );
+      })}
+    </Grid>
   );
 }

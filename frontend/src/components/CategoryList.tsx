@@ -1,3 +1,17 @@
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import type { Category } from '../types';
 
 interface CategoryListProps {
@@ -14,39 +28,53 @@ export function CategoryList({
   isDeleting,
 }: CategoryListProps): JSX.Element {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b-2 border-gray-300 bg-gray-50">
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Name</th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Description</th>
-            <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer component={Paper}>
+      <Table size="medium">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {categories.map((category) => (
-            <tr key={category.id} className="border-b border-gray-200 hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm text-gray-900 font-medium">{category.name}</td>
-              <td className="px-6 py-4 text-sm text-gray-600">{category.description || '—'}</td>
-              <td className="px-6 py-4 text-right">
-                <button
-                  onClick={() => onEdit(category.id)}
-                  className="text-blue-600 hover:text-blue-900 text-sm font-medium mr-4"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(category.id)}
-                  disabled={isDeleting}
-                  className="text-red-600 hover:text-red-900 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
+            <TableRow key={category.id} hover>
+              <TableCell>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                  <Avatar
+                    variant="rounded"
+                    sx={{ width: 32, height: 32, bgcolor: 'primary.light', color: 'primary.dark' }}
+                  >
+                    <SellOutlinedIcon sx={{ fontSize: 16 }} />
+                  </Avatar>
+                  <Typography variant="body2" fontWeight={500}>
+                    {category.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell sx={{ color: 'text.secondary' }}>
+                {category.description || '—'}
+              </TableCell>
+              <TableCell align="right">
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                  <IconButton size="small" onClick={() => onEdit(category.id)}>
+                    <EditOutlinedIcon fontSize="small" />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    disabled={isDeleting}
+                    onClick={() => onDelete(category.id)}
+                  >
+                    <DeleteOutlineIcon fontSize="small" />
+                  </IconButton>
+                </Box>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

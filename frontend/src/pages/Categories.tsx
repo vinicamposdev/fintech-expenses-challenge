@@ -1,4 +1,15 @@
 import { useState } from 'react';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
+import Paper from '@mui/material/Paper';
+import Avatar from '@mui/material/Avatar';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import AddIcon from '@mui/icons-material/Add';
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
 import { useCategories, useDeleteCategory } from '../hooks';
 import { CategoryForm } from '../components/CategoryForm';
 import { CategoryList } from '../components/CategoryList';
@@ -14,6 +25,11 @@ export function Categories(): JSX.Element {
     setEditingId(null);
   };
 
+  const handleCloseForm = (): void => {
+    setShowForm(false);
+    setEditingId(null);
+  };
+
   const handleDeleteClick = (id: string): void => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       deleteMutation.mutate(id);
@@ -21,56 +37,52 @@ export function Categories(): JSX.Element {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Categories</h1>
-        {!showForm && (
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
-          >
-            New Category
-          </button>
-        )}
-      </div>
+    <Box sx={{ maxWidth: 720, mx: 'auto' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Box>
+          <Typography variant="h5" fontWeight={700}>
+            Categories
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            Organize where your money goes.
+          </Typography>
+        </Box>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setShowForm(true)}>
+          New Category
+        </Button>
+      </Box>
 
-      {showForm && (
-        <div className="mb-8 bg-gray-50 p-6 rounded-lg border border-gray-200">
-          <CategoryForm
-            editingId={editingId}
-            onSuccess={handleCreateSuccess}
-            onCancel={() => {
-              setShowForm(false);
-              setEditingId(null);
-            }}
-          />
-        </div>
-      )}
+      <Dialog open={showForm} onClose={handleCloseForm} fullWidth maxWidth="sm">
+        <DialogTitle>{editingId ? 'Edit Category' : 'New Category'}</DialogTitle>
+        <CategoryForm
+          editingId={editingId}
+          onSuccess={handleCreateSuccess}
+          onCancel={handleCloseForm}
+        />
+      </Dialog>
 
       {isLoading && (
-        <div className="flex justify-center py-12">
-          <div className="text-gray-500">Loading categories...</div>
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <CircularProgress size={28} />
+        </Box>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <div className="text-sm text-red-800">
-            Failed to load categories. Please try again.
-          </div>
-        </div>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Failed to load categories. Please try again.
+        </Alert>
       )}
 
       {!isLoading && categories.length === 0 && (
-        <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-          <p className="text-gray-500 mb-4">No categories yet</p>
-          <button
-            onClick={() => setShowForm(true)}
-            className="text-blue-600 hover:text-blue-700 font-medium"
-          >
-            Create your first category
-          </button>
-        </div>
+        <Paper sx={{ textAlign: 'center', py: 8, borderStyle: 'dashed' }}>
+          <Avatar sx={{ bgcolor: 'grey.100', color: 'text.secondary', mx: 'auto', mb: 1.5 }}>
+            <SellOutlinedIcon fontSize="small" />
+          </Avatar>
+          <Typography color="text.secondary" sx={{ mb: 2 }}>
+            No categories yet
+          </Typography>
+          <Button onClick={() => setShowForm(true)}>Create your first category</Button>
+        </Paper>
       )}
 
       {!isLoading && categories.length > 0 && (
@@ -84,6 +96,6 @@ export function Categories(): JSX.Element {
           isDeleting={deleteMutation.isPending}
         />
       )}
-    </div>
+    </Box>
   );
 }

@@ -1,7 +1,23 @@
-import type { Transaction } from '../types';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import type { Category, Transaction } from '../types';
 
 interface TransactionListProps {
   transactions: Transaction[];
+  categories: Category[];
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
   isDeleting: boolean;
@@ -20,74 +36,84 @@ function formatDate(date: string): string {
 
 export function TransactionList({
   transactions,
+  categories,
   onEdit,
   onDelete,
   isDeleting,
 }: TransactionListProps): JSX.Element {
+  const categoryNameById = new Map(categories.map((category) => [category.id, category.name]));
+
   return (
-    <div className="overflow-x-auto mb-6">
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="border-b-2 border-gray-300 bg-gray-50">
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Description</th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Category</th>
-            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Type</th>
-            <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">Amount</th>
-            <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id} className="border-b border-gray-200 hover:bg-gray-50">
-              <td className="px-6 py-4 text-sm text-gray-900">{formatDate(transaction.date)}</td>
-              <td className="px-6 py-4 text-sm text-gray-900 font-medium">
-                {transaction.description}
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-600">
-                {/* Category name is not in Transaction, only categoryId */}
-                {transaction.categoryId}
-              </td>
-              <td className="px-6 py-4 text-sm">
-                <span
-                  className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    transaction.type === 'ENTRADA'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
-                >
-                  {transaction.type === 'ENTRADA' ? 'Income' : 'Expense'}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-sm text-gray-900 font-medium text-right">
-                <span
-                  className={
-                    transaction.type === 'ENTRADA' ? 'text-green-600' : 'text-red-600'
-                  }
-                >
-                  {transaction.type === 'ENTRADA' ? '+' : '-'}
-                  {formatCurrency(transaction.amount)}
-                </span>
-              </td>
-              <td className="px-6 py-4 text-right">
-                <button
-                  onClick={() => onEdit(transaction.id)}
-                  className="text-blue-600 hover:text-blue-900 text-sm font-medium mr-4"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => onDelete(transaction.id)}
-                  disabled={isDeleting}
-                  className="text-red-600 hover:text-red-900 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <TableContainer component={Paper} sx={{ mb: 3 }}>
+      <Table size="medium">
+        <TableHead>
+          <TableRow>
+            <TableCell>Date</TableCell>
+            <TableCell>Description</TableCell>
+            <TableCell>Category</TableCell>
+            <TableCell>Type</TableCell>
+            <TableCell align="right">Amount</TableCell>
+            <TableCell align="right">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {transactions.map((transaction) => {
+            const isIncome = transaction.type === 'ENTRADA';
+            return (
+              <TableRow key={transaction.id} hover>
+                <TableCell sx={{ color: 'text.secondary' }}>
+                  {formatDate(transaction.date)}
+                </TableCell>
+                <TableCell sx={{ fontWeight: 500 }}>{transaction.description}</TableCell>
+                <TableCell sx={{ color: 'text.secondary' }}>
+                  {categoryNameById.get(transaction.categoryId) ?? 'Uncategorized'}
+                </TableCell>
+                <TableCell>
+                  <Chip
+                    size="small"
+                    icon={
+                      isIncome ? (
+                        <ArrowUpwardIcon sx={{ fontSize: '14px !important' }} />
+                      ) : (
+                        <ArrowDownwardIcon sx={{ fontSize: '14px !important' }} />
+                      )
+                    }
+                    label={isIncome ? 'Income' : 'Expense'}
+                    color={isIncome ? 'success' : 'error'}
+                    variant="outlined"
+                    sx={{ fontWeight: 500 }}
+                  />
+                </TableCell>
+                <TableCell align="right">
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    color={isIncome ? 'success.main' : 'error.main'}
+                  >
+                    {isIncome ? '+' : '-'}
+                    {formatCurrency(transaction.amount)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 0.5 }}>
+                    <IconButton size="small" onClick={() => onEdit(transaction.id)}>
+                      <EditOutlinedIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      disabled={isDeleting}
+                      onClick={() => onDelete(transaction.id)}
+                    >
+                      <DeleteOutlineIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

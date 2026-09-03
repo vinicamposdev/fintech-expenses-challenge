@@ -2,6 +2,11 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import {
   useCreateTransaction,
   useTransaction,
@@ -84,31 +89,24 @@ export function TransactionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {error && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-800">{error}</div>
-        </div>
-      )}
-
-      <TransactionFormFields register={register} errors={errors} categories={categories} />
-
-      <div className="flex gap-3 pt-4">
-        <button
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <DialogContent dividers sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        {error && <Alert severity="error">{error}</Alert>}
+        <TransactionFormFields register={register} errors={errors} categories={categories} />
+      </DialogContent>
+      <DialogActions sx={{ p: 2 }}>
+        <Button color="inherit" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button
           type="submit"
+          variant="contained"
           disabled={isLoading || !amountValue}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
+          startIcon={isLoading ? <CircularProgress size={16} color="inherit" /> : undefined}
         >
           {isLoading ? (editingId ? 'Updating...' : 'Creating...') : editingId ? 'Update' : 'Create'}
-        </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 font-medium"
-        >
-          Cancel
-        </button>
-      </div>
+        </Button>
+      </DialogActions>
     </form>
   );
 }

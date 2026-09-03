@@ -1,4 +1,13 @@
 import { useState } from 'react';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useDashboard } from '../hooks';
 import { DashboardCards } from '../components/DashboardCards';
 import { TopCategories } from '../components/TopCategories';
@@ -20,53 +29,60 @@ export function Dashboard(): JSX.Element {
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-8">Dashboard</h1>
+    <Box>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h5" fontWeight={700}>
+          Dashboard
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+          An overview of your income and expenses.
+        </Typography>
+      </Box>
 
-      {/* Date Filter */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            />
-          </div>
-          <div className="flex items-end">
-            <button
-              onClick={handleClearDates}
-              className="w-full bg-gray-200 hover:bg-gray-300 text-gray-900 font-medium py-2 px-4 rounded-md"
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-      </div>
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Grid container spacing={2} alignItems="center">
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <TextField
+                label="Start Date"
+                type="date"
+                size="small"
+                fullWidth
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <TextField
+                label="End Date"
+                type="date"
+                size="small"
+                fullWidth
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                slotProps={{ inputLabel: { shrink: true } }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 4 }}>
+              <Button variant="outlined" color="inherit" fullWidth onClick={handleClearDates}>
+                Clear
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
       {isLoading && (
-        <div className="flex justify-center py-12">
-          <div className="text-gray-500">Loading dashboard...</div>
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <CircularProgress size={28} />
+        </Box>
       )}
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
-          <div className="text-sm text-red-800">
-            Failed to load dashboard. Please try again.
-          </div>
-        </div>
+        <Alert severity="error" sx={{ mb: 3 }}>
+          Failed to load dashboard. Please try again.
+        </Alert>
       )}
 
       {!isLoading && data && (
@@ -75,6 +91,6 @@ export function Dashboard(): JSX.Element {
           <TopCategories categories={data.topCategories} />
         </>
       )}
-    </div>
+    </Box>
   );
 }
