@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from '../transactions/entities/transaction.entity.js';
 import { DashboardService } from './dashboard.service.js';
 import { DashboardController } from './dashboard.controller.js';
+import { AuthModule } from '../auth/auth.module.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transaction])],
+  imports: [TypeOrmModule.forFeature([Transaction]), AuthModule],
   providers: [DashboardService],
   controllers: [DashboardController],
 })
