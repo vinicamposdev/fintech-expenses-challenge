@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import { AppModule } from './app.module.js';
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter.js';
 import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor.js';
+import { buildCorsOptions } from './common/config/cors.config.js';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,11 +30,7 @@ async function bootstrap() {
   app.use(helmet());
 
   // CORS configuration
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-  app.enableCors({
-    origin: frontendUrl,
-    credentials: true,
-  });
+  app.enableCors(buildCorsOptions());
 
   // Swagger/OpenAPI documentation
   const description = [
