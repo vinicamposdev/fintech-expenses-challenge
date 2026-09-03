@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ProtectedRoute } from '../components/ProtectedRoute';
-import { Home } from '../pages/Home';
+import { Dashboard } from '../pages/Dashboard';
 import { Login } from '../pages/Login';
 import { Register } from '../pages/Register';
 import { Categories } from '../pages/Categories';
@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Home />,
+            element: <Dashboard />,
           },
           {
             path: 'categories',
