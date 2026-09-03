@@ -30,7 +30,7 @@
     "seed": "node --loader ts-node/esm src/database/seed.ts"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
