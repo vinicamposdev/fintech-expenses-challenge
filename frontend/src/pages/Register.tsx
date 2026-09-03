@@ -15,6 +15,11 @@ import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useAuth } from '../context/AuthContext';
+import {
+  EMAIL_ALREADY_REGISTERED_MESSAGE,
+  getApiErrorMessage,
+  isEmailAlreadyRegisteredError,
+} from '../lib/errors';
 
 const registerSchema = z
   .object({
@@ -34,10 +39,12 @@ export function Register(): JSX.Element {
   const navigate = useNavigate();
   const { register: registerUser, isLoading } = useAuth();
   const [apiError, setApiError] = useState<string | null>(null);
+  const [emailTaken, setEmailTaken] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -46,14 +53,22 @@ export function Register(): JSX.Element {
   const onSubmit = async (data: RegisterFormData): Promise<void> => {
     try {
       setApiError(null);
+      setEmailTaken(false);
       await registerUser(data.name, data.email, data.password);
       navigate('/');
     } catch (error) {
-      if (error instanceof Error) {
-        setApiError(error.message);
-      } else {
-        setApiError('Registration failed. Please try again.');
+      if (isEmailAlreadyRegisteredError(error)) {
+        // Flag the offending field as well as the banner, so the user can see
+        // which input to change and jump straight to signing in.
+        setError(
+          'email',
+          { type: 'manual', message: EMAIL_ALREADY_REGISTERED_MESSAGE },
+          { shouldFocus: true }
+        );
+        setEmailTaken(true);
+        return;
       }
+      setApiError(getApiErrorMessage(error, 'Registration failed. Please try again.'));
     }
   };
 
@@ -85,6 +100,16 @@ export function Register(): JSX.Element {
         <Paper sx={{ p: 4 }}>
           <Box component="form" onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2.5}>
+              {emailTaken && (
+                <Alert severity="warning">
+                  This email is already registered.{' '}
+                  <Link component={RouterLink} to="/login" fontWeight={600}>
+                    Sign in
+                  </Link>{' '}
+                  instead.
+                </Alert>
+              )}
+
               {apiError && <Alert severity="error">{apiError}</Alert>}
 
               <TextField

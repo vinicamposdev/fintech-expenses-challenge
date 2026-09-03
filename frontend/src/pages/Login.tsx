@@ -15,6 +15,7 @@ import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import { useAuth } from '../context/AuthContext';
+import { getApiErrorMessage } from '../lib/errors';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -42,11 +43,7 @@ export function Login(): JSX.Element {
       await login(data.email, data.password);
       navigate('/');
     } catch (error) {
-      if (error instanceof Error) {
-        setApiError(error.message);
-      } else {
-        setApiError('Login failed. Please try again.');
-      }
+      setApiError(getApiErrorMessage(error, 'Login failed. Please try again.'));
     }
   };
 
@@ -72,9 +69,6 @@ export function Login(): JSX.Element {
           </Avatar>
           <Typography variant="h5" fontWeight={700}>
             Sign in to your account
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Demo: demo@example.com / password123
           </Typography>
         </Box>
 

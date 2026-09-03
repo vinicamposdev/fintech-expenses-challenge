@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import type { User, AuthResponse } from '../types';
 import * as authApi from '../api/auth';
+import { getApiErrorMessage } from '../lib/errors';
 
 interface AuthContextType {
   user: User | null;
@@ -39,19 +41,21 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
   const [user, setUser] = useState<User | null>(readStoredUser);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
   const login = async (email: string, password: string): Promise<void> => {
     try {
       setIsLoading(true);
       setError(null);
       const response: AuthResponse = await authApi.login({ email, password });
+      // Drop anything cached before this login so the new session starts from
+      // fresh server data instead of the previous user's transactions.
+      queryClient.clear();
       localStorage.setItem(TOKEN_KEY, response.accessToken);
       localStorage.setItem(USER_KEY, JSON.stringify(response.user));
       setUser(response.user);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to login. Please try again.';
-      setError(errorMessage);
+      setError(getApiErrorMessage(err, 'Failed to login. Please try again.'));
       throw err;
     } finally {
       setIsLoading(false);
@@ -63,13 +67,12 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
       setIsLoading(true);
       setError(null);
       const response: AuthResponse = await authApi.register({ name, email, password });
+      queryClient.clear();
       localStorage.setItem(TOKEN_KEY, response.accessToken);
       localStorage.setItem(USER_KEY, JSON.stringify(response.user));
       setUser(response.user);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to register. Please try again.';
-      setError(errorMessage);
+      setError(getApiErrorMessage(err, 'Failed to register. Please try again.'));
       throw err;
     } finally {
       setIsLoading(false);
@@ -81,6 +84,9 @@ export function AuthProvider({ children }: { children: ReactNode }): JSX.Element
     localStorage.removeItem(USER_KEY);
     setUser(null);
     setError(null);
+    // Wipe every cached query (transactions, categories, dashboard) so the next
+    // login refetches instead of briefly rendering the signed-out user's data.
+    queryClient.clear();
   };
 
   return (

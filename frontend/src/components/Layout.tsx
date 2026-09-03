@@ -16,6 +16,7 @@ import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SellIcon from '@mui/icons-material/SellOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { useAuth } from '../context/AuthContext';
 
 const drawerWidth = 240;
 
@@ -28,10 +29,11 @@ const navItems = [
 export function Layout(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useAuth();
 
   const handleLogout = (): void => {
-    localStorage.removeItem('accessToken');
-    navigate('/login');
+    logout();
+    navigate('/login', { replace: true });
   };
 
   const isActive = (path: string): boolean => location.pathname === path;
