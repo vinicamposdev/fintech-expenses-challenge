@@ -1,114 +1,263 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend - Desafio de Despesas Fintech
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API backend em NestJS com TypeScript para gerenciamento de despesas. Suporta autenticação JWT, isolamento multi-usuário e dashboard com agregações no banco de dados.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Pré-requisitos
 
-## Description
+- Node.js 18+
+- Docker e Docker Compose
+- npm ou yarn
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Como executar
 
-## Project setup
+### 1. Instalação
 
 ```bash
-$ npm install
+cd backend
+npm install
 ```
 
-## Compile and run the project
+### 2. Configurar variáveis de ambiente
+
+Copie `.env.example` para `.env`:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
 ```
 
-## Run tests
+Verifique as variáveis (padrões funcionam para desenvolvimento local):
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_NAME=fintech_db
+JWT_SECRET=seu-chave-secreta-minimo-32-caracteres
+NODE_ENV=development
+PORT=3001
+FRONTEND_URL=http://localhost:5173
+```
+
+### 3. Iniciar o banco de dados
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 4. Executar migrações
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run typeorm migration:run
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 5. Popular dados de demo
 
-## Observability
+```bash
+npm run seed
+```
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+Isso cria um usuário de teste:
+- **Email:** demo@example.com
+- **Senha:** password123
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+### 6. Iniciar o servidor
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+```bash
+# Desenvolvimento com hot-reload
+npm run dev
 
-## Resources
+# Produção
+npm run build
+npm run start
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+O servidor sobe em `http://localhost:3001`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**Documentação da API:** `http://localhost:3001/docs` (Swagger com autenticação Bearer)
 
-## Support
+## Testes
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Executar a suite de testes:
 
-## Stay in touch
+```bash
+npm run test        # Executa todos os testes
+npm run test:watch  # Modo observe
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Resultado esperado:** 38 testes passando, 0 falhando
 
-## License
+Os testes cobrem lógica de negócio core em 6 módulos com repositórios mockados (Vitest):
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Auth Module (4 tests)
+
+**Purpose**: Validates user registration and login workflows with security controls.
+
+- Register a new user successfully - confirms JWT token generation and user creation
+- Reject duplicate email during registration - enforces unique email constraint
+- Reject login if user not found - validates authentication failure
+- Validate user existence - confirms JWT strategy can fetch user data
+
+**Why tested**: Authentication is the security boundary. Tests ensure password never leaks in responses and duplicate emails are rejected at the service level.
+
+### Users Module (2 tests)
+
+**Purpose**: Validates user profile retrieval without exposing sensitive data.
+
+- Return user profile without password hash - confirms password hashes never leak to clients
+- Return null if user not found - handles missing user gracefully
+
+**Why tested**: Password hash is internal; leaking it violates security. Tests enforce data privacy.
+
+### Categories Module (9 tests)
+
+**Purpose**: Validates CRUD operations and user ownership enforcement.
+
+- Create a category for the user - adds category with userId scoping
+- Return all categories for the user ordered by creation date DESC - enforces ownership filter and ordering
+- Find category owned by user - validates scoped retrieval
+- Throw NotFoundException if category not found - 404 on missing resource
+- Throw NotFoundException if category belongs to another user - **ownership enforcement**: cross-user access returns 404 (not 403) to avoid leaking resource existence
+- Update category owned by user - modifies only owned resources
+- Throw NotFoundException on update if category belongs to another user - prevents cross-user updates
+- Remove category owned by user - deletes only owned resources
+- Throw NotFoundException on remove if category belongs to another user - prevents cross-user deletes
+
+**Why tested**: Multi-user isolation. Every test confirms userId is checked in WHERE clauses; unauthorized users see 404, not 403.
+
+### Transactions Module (14 tests)
+
+**Purpose**: Validates pagination, filtering, category ownership validation, and user-scoped access.
+
+**Pagination & Metadata**:
+- Return paginated transactions with default pagination (page 1, limit 10)
+- Calculate correct pagination for multiple pages - tests skip/take math and totalPages calculation
+
+**Filtering**:
+- Filter by transaction type (ENTRADA/SAIDA)
+- Filter by categoryId
+- Filter by date range (startDate/endDate)
+- Compose multiple filters with AND logic - combines type + categoryId + date filters (refinement, not expansion)
+
+**CRUD & Ownership**:
+- Create transaction with valid category - validates category belongs to user before creating transaction
+- Reject transaction with non-existent category - prevents invalid categoryId references
+- Reject transaction with category from another user - category ownership is checked (BadRequestException)
+- Find transaction owned by user - scoped retrieval by userId
+- Throw NotFoundException if transaction not found or belongs to another user
+- Remove transaction owned by user
+- Throw NotFoundException on remove if transaction belongs to another user
+
+**Why tested**: Complex multi-step filtering (pagination + type + categoryId + dates) must compose correctly. Category ownership validation prevents invalid foreign keys. User scoping prevents data leaks.
+
+### Dashboard Module (8 tests)
+
+**Purpose**: Validates aggregation queries for financial summaries.
+
+**Balance Calculation**:
+- Calculate correct balance from all-time transactions - CASE WHEN aggregate: (ENTRADA - SAIDA)
+- Calculate balance with zero transactions - handles empty state
+
+**Period Filtering**:
+- Apply date filters to period totals only - startDate/endDate filter ENTRADA/SAIDA sums (not balance)
+- Do not apply date filters to balance calculation - balance is all-time, unaffected by date range
+
+**Top Categories**:
+- Return top 3 categories ordered by outflow descending
+- Return fewer than 3 categories if not enough data - handles sparse data
+- Apply date filters to top categories query - parameterized SQL includes date filters
+
+**Why tested**: Dashboard aggregations use raw SQL with GROUP BY, SUM, and ORDER BY...LIMIT 3. Tests confirm: (1) balance logic (ENTRADA - SAIDA), (2) period totals respect date filters while balance doesn't, (3) top 3 ordering and count limits are correct, (4) parameterized queries prevent SQL injection.
+
+## Linting e Qualidade
+
+```bash
+npm run lint        # ESLint check e auto-fix
+npm run format      # Prettier format
+```
+
+- **TypeScript Strict Mode:** habilitado (nenhuma supressão `@ts-ignore` no código de produção)
+- **ESLint:** configurado para NestJS com regras estritas
+- **Prettier:** formatação automática
+
+## 🏗️ Decisões de Arquitetura
+
+### Esquema do Banco de Dados
+
+- **users**: id (PK), name, email (unique), passwordHash, created_at, updated_at
+- **categories**: id (PK), name, description, userId (FK, CASCADE), created_at, updated_at
+- **transactions**: id (PK), description, amount (decimal 10,2), type (ENTRADA/SAIDA), date, categoryId (FK, RESTRICT), userId (FK, CASCADE), created_at, updated_at
+
+**Regras de cascade:**
+- Deletar um usuário cascata para suas categorias e transações
+- Deletar uma categoria é RESTRITO se transações a referenciam (integridade referencial)
+
+### Isolamento Multi-Usuário
+
+Todas as queries filtram por `userId` autenticado. Acesso cross-user retorna **404** (não 403) para evitar vazar existência de recursos:
+
+```typescript
+// Exemplo: findOne(userId, categoryId)
+return this.repo.findOne({
+  where: { id: categoryId, userId }, // Ambas as condições required
+});
+// Se usuário diferente: retorna null → NotFoundException (404)
+```
+
+### Pipeline Global de Middleware
+
+1. **ValidationPipe**: Valida DTOs (whitelist, forbid unknown properties)
+2. **JwtAuthGuard**: Extrai e verifica JWT em rotas protegidas
+3. **ResponseInterceptor**: Envelopa responses em `{data}` ou `{data, meta}`
+4. **HttpExceptionFilter**: Padroniza erro: `{statusCode, message, error, timestamp, path}`
+5. **Helmet**: Headers de segurança (XSS, CSP, etc)
+6. **CORS**: Requests cross-origin de FRONTEND_URL
+
+### Agregações no Dashboard
+
+Todos os cálculos acontecem em SQL (não em JavaScript):
+
+```sql
+-- Saldo: all-time ENTRADA - SAIDA com CASE WHEN
+SELECT SUM(CASE WHEN type = 'ENTRADA' THEN amount ELSE -amount END) as balance
+FROM transactions WHERE userId = $1
+
+-- Totais por período: agrupados por tipo com filtros de data
+SELECT type, SUM(amount) as total FROM transactions 
+WHERE userId = $1 AND date BETWEEN $2 AND $3 
+GROUP BY type
+
+-- Top 3 categorias: raw SQL com LEFT JOIN
+SELECT c.id, c.name, SUM(t.amount) as totalOutflow
+FROM transactions t
+LEFT JOIN categories c ON t.categoryId = c.id
+WHERE t.userId = $1 AND t.type = 'SAIDA' AND t.date BETWEEN $2 AND $3
+GROUP BY c.id
+ORDER BY totalOutflow DESC LIMIT 3
+```
+
+## Contribuição
+
+### Workflow de desenvolvimento
+
+1. Crie uma branch para sua feature: `git checkout -b feature/descricao`
+2. Faça mudanças incrementais com commits descritivos
+3. Execute testes: `npm run test`
+4. Execute lint: `npm run lint`
+5. Abra um pull request com descrição clara
+
+### Padrões de código
+
+- **Sem `any` sem justificativa**: Type safety é obrigatório
+- **Módulos NestJS pequenos e focados**: Um responsabilidade por módulo
+- **Testes para regras de negócio**: Não apenas happy-path
+- **Sem secrets no git**: Use `.env.example` para documentar variáveis
+
+### Stack técnico
+
+- **NestJS 10+** com TypeScript strict
+- **TypeORM** para ORM + migrations
+- **PostgreSQL 16** (local via Docker Compose)
+- **JWT** com Passport para autenticação
+- **Vitest** para testes unitários
+- **Swagger** para documentação automática da API
