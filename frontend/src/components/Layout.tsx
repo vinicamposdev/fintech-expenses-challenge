@@ -39,6 +39,16 @@ export function Layout(): JSX.Element {
                 >
                   Categories
                 </Link>
+                <Link
+                  to="/transactions"
+                  className={`px-3 py-2 text-sm font-medium rounded-md ${
+                    isActive('/transactions')
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Transactions
+                </Link>
               </div>
             </div>
             <div className="flex items-center gap-4">
