@@ -5,6 +5,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CategoriesService } from './categories.service.js';
 import { Category } from './entities/category.entity.js';
 import { CreateCategoryDto } from './dtos/create-category.dto.js';
@@ -35,11 +36,11 @@ describe('CategoriesService', () => {
         {
           provide: getRepositoryToken(Category),
           useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            find: jest.fn(),
-            findOne: jest.fn(),
-            remove: jest.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            find: vi.fn(),
+            findOne: vi.fn(),
+            remove: vi.fn(),
           },
         },
       ],

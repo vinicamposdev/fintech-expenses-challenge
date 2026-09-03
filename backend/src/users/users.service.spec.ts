@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { UsersService } from './users.service.js';
 import { User } from './entities/user.entity.js';
 
@@ -29,7 +30,7 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: {
-            findOne: jest.fn(),
+            findOne: vi.fn(),
           },
         },
       ],

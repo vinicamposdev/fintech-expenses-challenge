@@ -5,6 +5,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TransactionsService } from './transactions.service.js';
 import { Transaction, TransactionType } from './entities/transaction.entity.js';
 import { Category } from '../categories/entities/category.entity.js';
@@ -50,17 +51,17 @@ describe('TransactionsService', () => {
         {
           provide: getRepositoryToken(Transaction),
           useValue: {
-            create: jest.fn(),
-            save: jest.fn(),
-            findOne: jest.fn(),
-            remove: jest.fn(),
-            createQueryBuilder: jest.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
+            findOne: vi.fn(),
+            remove: vi.fn(),
+            createQueryBuilder: vi.fn(),
           },
         },
         {
           provide: getRepositoryToken(Category),
           useValue: {
-            findOne: jest.fn(),
+            findOne: vi.fn(),
           },
         },
       ],
@@ -131,14 +132,12 @@ describe('TransactionsService', () => {
       const query: QueryTransactionsDto = {};
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest
-          .fn()
-          .mockResolvedValueOnce([[mockTransaction], 1]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[mockTransaction], 1]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(
@@ -160,12 +159,12 @@ describe('TransactionsService', () => {
       const query: QueryTransactionsDto = { page: 2, limit: 5 };
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest.fn().mockResolvedValueOnce([[], 23]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[], 23]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(
@@ -190,14 +189,12 @@ describe('TransactionsService', () => {
       const query: QueryTransactionsDto = { type: TransactionType.SAIDA };
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest
-          .fn()
-          .mockResolvedValueOnce([[mockTransaction], 1]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[mockTransaction], 1]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(
@@ -216,14 +213,12 @@ describe('TransactionsService', () => {
       const query: QueryTransactionsDto = { categoryId };
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest
-          .fn()
-          .mockResolvedValueOnce([[mockTransaction], 1]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[mockTransaction], 1]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(
@@ -245,14 +240,12 @@ describe('TransactionsService', () => {
       };
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest
-          .fn()
-          .mockResolvedValueOnce([[mockTransaction], 1]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[mockTransaction], 1]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(
@@ -272,14 +265,12 @@ describe('TransactionsService', () => {
       };
 
       const mockQueryBuilder = {
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        orderBy: jest.fn().mockReturnThis(),
-        skip: jest.fn().mockReturnThis(),
-        take: jest.fn().mockReturnThis(),
-        getManyAndCount: jest
-          .fn()
-          .mockResolvedValueOnce([[mockTransaction], 1]),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        skip: vi.fn().mockReturnThis(),
+        take: vi.fn().mockReturnThis(),
+        getManyAndCount: vi.fn().mockResolvedValueOnce([[mockTransaction], 1]),
       };
 
       transactionsRepository.createQueryBuilder.mockReturnValueOnce(

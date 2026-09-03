@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DashboardService } from './dashboard.service.js';
 import {
   Transaction,
@@ -26,8 +27,8 @@ describe('DashboardService', () => {
         {
           provide: getRepositoryToken(Transaction),
           useValue: {
-            createQueryBuilder: jest.fn(),
-            query: jest.fn(),
+            createQueryBuilder: vi.fn(),
+            query: vi.fn(),
           },
         },
       ],
@@ -43,19 +44,19 @@ describe('DashboardService', () => {
 
       // Mock balance query
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '5000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '5000' }),
       };
 
       // Mock period totals query
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([
           { type: TransactionType.ENTRADA, total: '10000' },
           { type: TransactionType.SAIDA, total: '5000' },
         ]),
@@ -91,18 +92,18 @@ describe('DashboardService', () => {
       const query: QueryDashboardDto = {};
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '0' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '0' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([]),
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([]),
       };
 
       transactionsRepository.createQueryBuilder
@@ -128,19 +129,19 @@ describe('DashboardService', () => {
       };
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '5000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '5000' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([
           { type: TransactionType.ENTRADA, total: '3000' },
           { type: TransactionType.SAIDA, total: '1500' },
         ]),
@@ -165,19 +166,19 @@ describe('DashboardService', () => {
       };
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '10000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '10000' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([]),
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([]),
       };
 
       transactionsRepository.createQueryBuilder
@@ -198,18 +199,18 @@ describe('DashboardService', () => {
       const query: QueryDashboardDto = {};
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '5000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '5000' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([]),
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([]),
       };
 
       transactionsRepository.createQueryBuilder
@@ -238,18 +239,18 @@ describe('DashboardService', () => {
       const query: QueryDashboardDto = {};
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '1000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '1000' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([]),
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([]),
       };
 
       transactionsRepository.createQueryBuilder
@@ -273,19 +274,19 @@ describe('DashboardService', () => {
       };
 
       const balanceQueryBuilder = {
-        select: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        getRawOne: jest.fn().mockResolvedValueOnce({ balance: '5000' }),
+        select: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        getRawOne: vi.fn().mockResolvedValueOnce({ balance: '5000' }),
       };
 
       const periodQueryBuilder = {
-        createQueryBuilder: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        addSelect: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        andWhere: jest.fn().mockReturnThis(),
-        groupBy: jest.fn().mockReturnThis(),
-        getRawMany: jest.fn().mockResolvedValueOnce([]),
+        createQueryBuilder: vi.fn().mockReturnThis(),
+        select: vi.fn().mockReturnThis(),
+        addSelect: vi.fn().mockReturnThis(),
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        groupBy: vi.fn().mockReturnThis(),
+        getRawMany: vi.fn().mockResolvedValueOnce([]),
       };
 
       transactionsRepository.createQueryBuilder

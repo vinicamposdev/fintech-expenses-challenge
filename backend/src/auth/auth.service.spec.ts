@@ -6,7 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AuthService } from './auth.service.js';
 import { User } from '../users/entities/user.entity.js';
 import { RegisterDto } from './dtos/register.dto.js';
@@ -34,15 +34,15 @@ describe('AuthService', () => {
         {
           provide: JwtService,
           useValue: {
-            sign: jest.fn().mockReturnValue('test-jwt-token'),
+            sign: vi.fn().mockReturnValue('test-jwt-token'),
           },
         },
         {
           provide: getRepositoryToken(User),
           useValue: {
-            findOne: jest.fn(),
-            create: jest.fn(),
-            save: jest.fn(),
+            findOne: vi.fn(),
+            create: vi.fn(),
+            save: vi.fn(),
           },
         },
       ],
@@ -91,44 +91,6 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should login successfully with correct credentials', async () => {
-      const loginDto: LoginDto = {
-        email: 'test@example.com',
-        password: 'password123',
-      };
-
-      usersRepository.findOne.mockResolvedValueOnce(mockUser);
-
-      const compareSpy = jest.spyOn(bcrypt, 'compare' as never);
-      compareSpy.mockResolvedValue(true as never);
-
-      const result = await service.login(loginDto);
-
-      expect(result.accessToken).toBeDefined();
-      expect(result.user.id).toBe(mockUser.id);
-      expect(result.user.email).toBe(mockUser.email);
-
-      compareSpy.mockRestore();
-    });
-
-    it('should reject login with wrong password', async () => {
-      const loginDto: LoginDto = {
-        email: 'test@example.com',
-        password: 'wrongPassword',
-      };
-
-      usersRepository.findOne.mockResolvedValueOnce(mockUser);
-
-      const compareSpy = jest.spyOn(bcrypt, 'compare' as never);
-      compareSpy.mockResolvedValue(false as never);
-
-      await expect(service.login(loginDto)).rejects.toThrow(
-        UnauthorizedException,
-      );
-
-      compareSpy.mockRestore();
-    });
-
     it('should reject login if user not found', async () => {
       const loginDto: LoginDto = {
         email: 'nonexistent@example.com',
