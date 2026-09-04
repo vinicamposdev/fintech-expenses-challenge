@@ -56,6 +56,12 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Test
+        run: npm test
+
+      - name: End-to-end tests
+        run: npm run test:e2e
+
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 

@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "lint": "eslint \"{src,test}/**/*.ts{x,}\" --fix",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run --exclude \"src/e2e/**\"",
+    "test:watch": "vitest",
+    "test:cov": "vitest run --coverage",
+    "test:e2e": "vitest run src/e2e",
+    "test:all": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
