@@ -104,7 +104,11 @@ async function bootstrap() {
   });
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  // Bind to all interfaces explicitly — Node's default host (`::`) is
+  // IPv6-only on some container images, which Railway's edge proxy can't
+  // reach: the app never sees the request, so nothing shows up in the
+  // logs, but every request comes back 502 at the proxy.
+  await app.listen(port, '0.0.0.0');
   console.log(`Application is running on: http://localhost:${port}`);
   console.log(
     `Swagger documentation available at: http://localhost:${port}/docs`,
