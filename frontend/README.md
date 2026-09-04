@@ -3,7 +3,7 @@
 SPA de gestão de despesas. **React Query** cuida do estado do servidor, **Context API** da sessão e dos toasts, e **MUI v9** da interface, sobre um tema próprio.
 
 - **Dev server**: `http://localhost:5173`
-- **Backend esperado**: `http://localhost:3000` (configurável em `API_URL`)
+- **Backend esperado**: `http://localhost:3000` (configurável em `VITE_API_URL`)
 
 ---
 
@@ -11,7 +11,7 @@ SPA de gestão de despesas. **React Query** cuida do estado do servidor, **Conte
 
 ```bash
 npm install
-cp .env.example .env   # API_URL=http://localhost:3000
+cp .env.example .env   # VITE_API_URL=http://localhost:3000
 npm run dev
 ```
 
@@ -184,7 +184,7 @@ createCategory.mutate(
 
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
-| `API_URL` | `http://localhost:3000` | URL base da API. Sem ela, `lib/client.ts` cai nesse mesmo padrão |
+| `VITE_API_URL` | `http://localhost:3000` | URL base da API. Sem ela, `lib/client.ts` cai nesse mesmo padrão |
 
 Variáveis do Vite são embutidas no bundle em tempo de build: só valores públicos, nunca segredo.
 
@@ -193,7 +193,7 @@ Variáveis do Vite são embutidas no bundle em tempo de build: só valores públ
 ## Deploy na Vercel
 
 1. Importe o repositório e defina `frontend/` como root directory
-2. Em Settings → Environment Variables, configure `API_URL` com a URL pública do backend
+2. Em Settings → Environment Variables, configure `VITE_API_URL` com a URL pública do backend
 3. Deploy
 
 O `vercel.json` já traz build (`npm run build`), output (`dist`) e o rewrite de SPA. Depois do deploy, confirme que a URL redireciona para `/login` e que `FRONTEND_URL` no backend inclui o domínio da Vercel — senão o navegador barra as chamadas por CORS.

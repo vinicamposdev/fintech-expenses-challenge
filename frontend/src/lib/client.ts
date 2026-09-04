@@ -1,6 +1,28 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
-const baseURL = import.meta.env.API_URL || 'http://localhost:3000';
+const DEFAULT_API_URL = 'http://localhost:3000';
+
+
+export function resolveBaseUrl(
+  apiUrl: string | undefined = import.meta.env.VITE_API_URL,
+  isProduction: boolean = import.meta.env.PROD
+): string {
+  const configured = apiUrl?.trim().replace(/\/+$/, '');
+
+  if (!configured) {
+    if (isProduction) {
+      console.error(
+        'VITE_API_URL is not set - falling back to ' +
+          `${DEFAULT_API_URL}. Set it in the deployment environment.`
+      );
+    }
+    return DEFAULT_API_URL;
+  }
+
+  return /^https?:\/\//i.test(configured) ? configured : `https://${configured}`;
+}
+
+export const baseURL = resolveBaseUrl();
 
 export const apiClient: AxiosInstance = axios.create({
   baseURL,

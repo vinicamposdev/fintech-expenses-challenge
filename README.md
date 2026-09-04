@@ -219,7 +219,7 @@ API em `http://localhost:3000`, Swagger em `http://localhost:3000/docs`.
 ```bash
 cd ../frontend
 npm install
-cp .env.example .env          # API_URL=http://localhost:3000
+cp .env.example .env          # VITE_API_URL=http://localhost:3000
 npm run dev
 ```
 
@@ -253,7 +253,7 @@ Criado por `npm run seed`, com 5 categorias e 14 transações espalhadas em data
 
 | Variável | Padrão local | Descrição |
 |----------|--------------|-----------|
-| `API_URL` | `http://localhost:3000` | URL base da API |
+| `VITE_API_URL` | `http://localhost:3000` | URL base da API |
 
 ---
 
@@ -305,7 +305,7 @@ npm run lint
 ### Frontend → Vercel
 
 1. Importe o repositório e defina `frontend/` como root directory.
-2. Configure `API_URL` com a URL pública do backend.
+2. Configure `VITE_API_URL` com a URL pública do backend.
 3. Deploy. O `vercel.json` já traz o build, o output `dist/` e o rewrite de SPA (toda rota serve `index.html`, necessário para o React Router).
 
 ### Backend → Railway
