@@ -8,7 +8,17 @@ Plataforma web de gestão de despesas construída com **NestJS + React + Postgre
 | Backend | NestJS 12 + TypeORM + Passport/JWT | `http://localhost:3000` (docs em `/docs`) |
 | Banco | PostgreSQL 16 (Docker Compose) | `localhost:5432` |
 
-**Deploy**: frontend na Vercel, backend + PostgreSQL na Railway (URLs preenchidas após o deploy).
+
+## Ambiente publicado
+
+| O quê | URL |
+|-------|-----|
+| Aplicação (frontend) | https://fintech-expenses-challenge-five.vercel.app |
+| Criar conta | https://fintech-expenses-challenge-five.vercel.app/register |
+| API (backend) | https://fintech-expenses-challenge-production-5b3e.up.railway.app |
+| Documentação da API (Swagger) | https://fintech-expenses-challenge-production-5b3e.up.railway.app/docs |
+
+Frontend na Vercel, backend + PostgreSQL na Railway.
 
 ---
 
