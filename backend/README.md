@@ -52,8 +52,9 @@ Usuário criado pelo seed: **demo@example.com** / **password123**.
 
 | Variável | Padrão local | Descrição |
 |----------|--------------|-----------|
-| `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/fintech_expenses` | Connection string completa; é o que a Railway fornece |
-| `DB_HOST` `DB_PORT` `DB_USERNAME` `DB_PASSWORD` `DB_NAME` | `localhost` `5432` `postgres` `postgres` `fintech_expenses` | Alternativa por campos, para desenvolvimento |
+| `DATABASE_URL` | `postgresql://postgres:postgres@localhost:5432/fintech_expenses` | Connection string completa; tem prioridade sobre os campos `DB_*` abaixo. Em produção é a connection string do Neon |
+| `DB_HOST` `DB_PORT` `DB_USERNAME` `DB_PASSWORD` `DB_NAME` | `localhost` `5432` `postgres` `postgres` `fintech_expenses` | Alternativa por campos, usada só quando `DATABASE_URL` não está setado |
+| `DB_SSL` | `false` | `true` habilita TLS sem verificar o certificado — só necessário atrás de um proxy que não usa CA pública (ex.: proxy público da Railway). O Neon já negocia TLS sozinho via `sslmode=require` na própria URL |
 | `JWT_SECRET` | — | **Obrigatório em produção.** Gere com `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
 | `NODE_ENV` | `development` | Em `production` o CORS deixa de liberar localhost |
 | `PORT` | `3000` | Porta HTTP (a Railway injeta a dela) |
@@ -220,27 +221,36 @@ Lista separada por vírgulas, normalização de barra final e caixa, liberação
 
 ---
 
-## Deploy na Railway
+## Deploy (Railway + Neon)
 
-1. Crie o projeto e adicione um serviço **PostgreSQL**.
-2. Adicione o serviço Node apontando para `backend/`. O `railway.json` já define builder nixpacks e `npm run prod` como start command.
-3. Configure as variáveis:
+O app roda na Railway; o Postgres é um projeto **Neon** externo (não o plugin Postgres da Railway). `.github/workflows/deploy-backend.yml` cuida de tudo a cada push em `main`: `verify` (lint, test, build) → `migrate-neon` (migrations + seed contra o Neon) → `deploy` (`railway up`).
+
+1. **Neon**: crie o projeto (`neon link --project-id <id> --branch production -y` já deixa `backend/.neon` apontando pra ele) e pegue a connection string com `neon connection-string production` — ou copie do console.
+2. **Railway**: crie o serviço Node apontando para `backend/` (Root Directory `backend`, sem plugin Postgres). `railway.json` já define builder Railpack, `npm run migration:run:prod` como pre-deploy e `npm run prod` como start command.
+3. Configure as variáveis do serviço Railway:
 
 | Variável | Valor |
 |----------|-------|
-| `DATABASE_URL` | referência ao serviço PostgreSQL |
+| `DATABASE_URL` | connection string do Neon (inclui `sslmode=require`, então o driver `pg` já negocia TLS sozinho) |
 | `JWT_SECRET` | string aleatória de 32+ caracteres |
 | `FRONTEND_URL` | URL da Vercel (sem barra final) |
 | `NODE_ENV` | `production` |
 
-4. Adicione um pre-deploy hook com `npm run typeorm:migration:run`.
-5. Rode `npm run seed` uma vez pelo console, se quiser os dados de demonstração.
+4. Configure os secrets do GitHub Actions (Settings → Secrets and variables → Actions):
+
+| Secret/Var | Valor |
+|------------|-------|
+| `RAILWAY_TOKEN` | Project Token da Railway (Project Settings → Tokens) |
+| `NEON_DATABASE_URL` | mesma connection string do Neon, usada pelo job `migrate-neon` |
+| `vars.RAILWAY_SERVICE` | nome do serviço na Railway (default: `backend`) |
+
+5. Rode `npm run seed` localmente contra o Neon (`neon link` já grava `DATABASE_URL` em `.env`) se quiser os dados de demonstração fora do CI.
 6. Verifique: `curl https://<host>/` responde o health check e `/docs` carrega o Swagger.
 
 ### Troubleshooting
 
-- **Falha de conexão ao banco** — confira se `DATABASE_URL` referencia o serviço PostgreSQL do projeto.
-- **Tabelas ausentes** — o pre-deploy hook das migrations não rodou.
+- **Falha de conexão ao banco (`ECONNREFUSED ::1:5432` / `127.0.0.1:5432`)** — `DATABASE_URL` não está setado no serviço Railway, então o app caiu nos defaults locais (`localhost:5432`). Confira a variável no dashboard.
+- **Tabelas ausentes** — o job `migrate-neon` não rodou (PR, ou falhou antes do `deploy`); confira a aba Actions.
 - **CORS bloqueado no frontend** — o log do boot imprime as origens aceitas; compare com o domínio real da Vercel, sem barra final.
 - **`JWT_SECRET` ausente** — em desenvolvimento cai num segredo padrão; em produção, defina explicitamente.
 
