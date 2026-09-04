@@ -98,7 +98,7 @@ export function Register(): JSX.Element {
         </Box>
 
         <Paper sx={{ p: 4 }}>
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
             <Stack spacing={2.5}>
               {emailTaken && (
                 <Alert severity="warning">

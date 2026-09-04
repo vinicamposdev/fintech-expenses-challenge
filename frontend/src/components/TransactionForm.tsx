@@ -89,7 +89,7 @@ export function TransactionForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <DialogContent dividers sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         {error && <Alert severity="error">{error}</Alert>}
         <TransactionFormFields register={register} errors={errors} categories={categories} />

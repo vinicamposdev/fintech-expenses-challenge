@@ -66,7 +66,7 @@ export function CategoryForm({ editingId, onSuccess, onCancel }: CategoryFormPro
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
       <DialogContent dividers>
         <Stack spacing={2}>
           {error && <Alert severity="error">{error}</Alert>}

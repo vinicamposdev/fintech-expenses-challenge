@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ProtectedRoute } from '../components/ProtectedRoute';
 import { Dashboard } from '../pages/Dashboard';
@@ -8,7 +8,7 @@ import { Categories } from '../pages/Categories';
 import { Transactions } from '../pages/Transactions';
 import { NotFound } from '../pages/NotFound';
 
-export const router = createBrowserRouter([
+export const routes: RouteObject[] = [
   {
     path: '/login',
     element: <Login />,
@@ -44,4 +44,6 @@ export const router = createBrowserRouter([
     path: '*',
     element: <NotFound />,
   },
-]);
+];
+
+export const router = createBrowserRouter(routes);
